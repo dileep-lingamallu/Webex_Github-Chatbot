@@ -1,10 +1,14 @@
 import requests
+import logging
+import os
 
-# Webex Bot Token and Room ID
-WEBEX_BOT_TOKEN = 'your_webex_bot_token'
-WEBEX_ROOM_ID = 'your_webex_room_id'  # Room where the bot will post messages
+# Webex Bot Token and Room ID (from environment variables)
+WEBEX_BOT_TOKEN = os.getenv('WEBEX_BOT_TOKEN')
+WEBEX_ROOM_ID = os.getenv('WEBEX_ROOM_ID')  # Room where the bot will post messages
 
-# Function to send message to Webex
+logging.basicConfig(filename='webex_bot.log', level=logging.INFO)
+
+# Function to send message to Webex with error handling
 def send_message_to_webex(summary):
     url = "https://webexapis.com/v1/messages"
     headers = {
@@ -16,8 +20,10 @@ def send_message_to_webex(summary):
         "text": summary
     }
 
-    response = requests.post(url, headers=headers, json=data)
-    if response.status_code == 200:
-        print("Message sent to Webex successfully.")
-    else:
-        print(f"Error sending message to Webex: {response.status_code}, {response.text}")
+    try:
+        logging.info("Sending message to Webex.")
+        response = requests.post(url, headers=headers, json=data, timeout=10)
+        response.raise_for_status()  # Raise error if request fails
+        logging.info("Message sent to Webex successfully.")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error sending message to Webex: {e}")
