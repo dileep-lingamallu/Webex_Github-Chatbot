@@ -88,7 +88,7 @@ To securely handle API tokens and sensitive information, store the **GitHub Toke
 
 ## Logging and Error Handling
 
-- All logs are written to the `webex_bot.log` file. This includes successful operations and error messages.
+- All logs are written to the `bot.log` file. This includes successful operations and error messages.
 - The script is built with error handling to deal with API errors and network issues.
 
 ## Customization
